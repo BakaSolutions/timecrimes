@@ -1,0 +1,75 @@
+:root {
+    --background: #0a0a0a;
+    --background-secondary: #000;
+    --background-focus: #444c;
+    --color: #fffd;
+    --color-secondary: #fff6;
+    --color-focus: #fff;
+}
+* {
+    box-sizing: border-box;
+}
+a {
+    color: var(--color);
+}
+body {
+    background: var(--background);
+    color: var(--color);
+    margin: 0 auto;
+    text-align: center;
+}
+input, button {
+    background: var(--background-secondary);
+    color: var(--color-secondary);
+    border: none;
+    padding: 1em;
+}
+body, input, button {
+    font-family:
+            "Cascadia Code PL",
+            "Cascadia Mono PL",
+            "Ubuntu",
+            "Courier New",
+            monospace;
+    font-size: 1em;
+}
+input:focus {
+    outline: none;
+    background: var(--background-focus);
+    color: var(--color-focus);
+}
+button {
+    margin: 0;
+    border: 0;
+    background: none;
+    vertical-align: baseline;
+    font-family: inherit;
+    font-weight: inherit;
+    color: inherit;
+    -webkit-appearance: none;
+    appearance: none;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    padding: 1em;
+}
+input[type=text] {
+    width: 100%;
+}
+.new-task form {
+    display: flex;
+}
+footer > div, input[type=checkbox] {
+    margin: 1em;
+}
+ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+.editing {
+    box-shadow: 0 0 .4em #ff0;
+}
+.completed {
+    background: #0f06;
+}

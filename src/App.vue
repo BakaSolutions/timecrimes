@@ -1,0 +1,320 @@
+<template>
+  <div id="app">
+    <header class="flex">
+      <div class="left">Timecrimes</div>
+      <div class="right">no time management is a crime</div>
+    </header>
+    <main>
+      <section class="main" v-show="todos.length">
+        <ul class="todo-list">
+          <li class="flex">
+            <div v-for="c in columns" :key="c.column"
+                 @click="sortBy(c.column)"
+                 class="title"
+                 :class="{selected: sortedBy === c.column,
+                  asc: sorted === 'asc',
+                  desc: sorted === 'desc',
+                  'grow-2': c.grow === 2}">{{c.title}}</div>
+          </li>
+          <li class="todo" v-for="todo in filteredTodos" :key="todo.id">
+            <ToDoItem :todo="todo"
+                      :edited-todo="editedTodo"
+                      @todo-edit="editTodo(todo)"
+                      @todo-edit-done="doneEdit(todo)"
+                      @todo-edit-cancel="cancelEdit(todo)"
+            />
+          </li>
+        </ul>
+      </section>
+      <div class="new-task">
+        <form @submit.prevent="addTodo">
+          <input
+              type="text"
+              autofocus
+              autocomplete="off"
+              placeholder="What needs to be done?"
+              v-model.trim.lazy="newTodo.title" />
+          <input type="datetime-local" v-model="newTodo.date" />
+        </form>
+      </div>
+      <div class="flex pagination" v-show="limit < todos.length">
+        <div>
+          <button v-if="currentPage > 1" @click="prevPage">&lt;&lt; Previous</button>
+        </div>
+        <div>
+          Page {{currentPage}}/{{Math.floor(todos.length/limit)+1}}
+        </div>
+        <div>
+          <button v-if="currentPage*limit < todos.length" @click="nextPage">Next &gt;&gt;</button>
+        </div>
+      </div>
+      <ul class="filters flex" v-show="todos.length">
+        <li>
+          <a href="#/all" :class="{ selected: visibility === 'all' }">
+            All
+            <span class="counter" v-show="todos.length">
+              ({{ todos.length }})
+            </span>
+          </a>
+        </li>
+        <li>
+          <a href="#/active" :class="{ selected: visibility === 'active' }">
+            Active
+            <span class="counter" v-show="remaining">
+              ({{ remaining }})
+            </span>
+          </a>
+        </li>
+        <li>
+          <a href="#/completed" :class="{ selected: visibility === 'completed' }">
+            Completed
+            <span class="counter" v-show="todos.length - remaining">
+              ({{ todos.length - remaining }})
+            </span>
+          </a>
+        </li>
+      </ul>
+      <footer v-show="todos.length">
+        <button
+            class="clear-completed"
+            @click="removeCompleted"
+            v-show="todos.length > remaining"
+        >
+          [ Clear completed tasks ]
+        </button>
+        <div>
+          Baka Solutions, 2021
+        </div>
+      </footer>
+    </main>
+  </div>
+</template>
+
+<script>
+import "./assets/App.css";
+
+const STORAGE_KEY = "todo";
+let todoStorage = {
+  fetch() {
+    let todos = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+    todos.forEach(function(todo, index) {
+      todo.id = index;
+    });
+    todoStorage.uid = todos.length;
+    return todos;
+  },
+  save(todos) {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(todos));
+  }
+};
+let filters = {
+  all: todos => todos,
+  active: todos => todos.filter(todo => !todo.completed),
+  completed: todos => todos.filter(todo => todo.completed),
+};
+import ToDoItem from "@/components/ToDoItem";
+
+export default {
+  name: 'Timecrimes',
+  components: {
+    ToDoItem
+  },
+  data() {
+    return {
+      todos: todoStorage.fetch(),
+      newTodo: {},
+      editedTodo: {},
+
+      visibility: "all",
+      sortedBy: "date",
+      sorted: "asc",
+      columns: [
+        //{column: 'id', title: 'Id'},
+        {column: 'title', title: 'Task', grow: 2},
+        {column: 'date', title: 'Time'}
+      ],
+      limit: 10,
+      currentPage: 1
+    }
+  },
+  watch: {
+    todos: {
+      handler(todos) {
+        todoStorage.save(todos);
+      },
+      deep: true
+    }
+  },
+  created() {
+    window.addEventListener("hashchange", this.onHashChange);
+    this.onHashChange();
+  },
+  beforeDestroy() {
+    window.removeEventListener("hashchange", this.onHashChange);
+  },
+  computed: {
+    filteredTodos() {
+      return filters[this.visibility](this.todos).sort((a,b) => {
+        let modifier = this.sorted === "asc" ? 1 : -1;
+        if (a[this.sortedBy] > b[this.sortedBy]) {
+          return modifier;
+        }
+        if (a[this.sortedBy] < b[this.sortedBy]) {
+          return -1 * modifier;
+        }
+        if (typeof a[this.sortedBy] === "undefined"
+          && typeof b[this.sortedBy] === "undefined") {
+          return 0;
+        }
+        if (typeof a[this.sortedBy] === "undefined") {
+          return 1;
+        }
+        if (typeof b[this.sortedBy] === "undefined") {
+          return -1;
+        }
+        return 0;
+      }).filter((_, index) => {
+        let start = (this.currentPage - 1) * this.limit;
+        let end = this.currentPage * this.limit;
+        if (index >= start && index < end) {
+          return true;
+        }
+      });
+    },
+    remaining() {
+      return filters.active(this.todos).length;
+    },
+    allDone: {
+      get() {
+        return this.remaining === 0;
+      },
+      set(value) {
+        this.todos.forEach(todo => todo.completed = value);
+      }
+    }
+  },
+  filters: {
+    pluralize(n) {
+      return n === 1 ? "item" : "items";
+    }
+  },
+  methods: {
+    onHashChange() {
+      let visibility = window.location.hash.replace(/#\/?/, "");
+      if (filters[visibility]) {
+        return this.visibility = visibility;
+      }
+      window.location.hash = "";
+      this.visibility = "all";
+    },
+    sortBy(column) {
+      if (this.sortedBy === column) {
+        this.sorted = (this.sorted === 'asc')
+          ? 'desc'
+          : 'asc';
+      } else {
+        this.sorted = 'asc';
+      }
+      this.sortedBy = column;
+    },
+    nextPage() {
+      if((this.currentPage * this.limit) < this.todos.length) {
+        this.currentPage++;
+      }
+    },
+    prevPage() {
+      if(this.currentPage > 1) {
+        this.currentPage--;
+      }
+    },
+    addTodo() {
+      let {title, date} = this.newTodo;
+      if (!title) {
+        return;
+      }
+      this.todos.push({
+        id: todoStorage.uid++,
+        title,
+        date,
+        completed: false
+      });
+      this.newTodo = {};
+    },
+    removeTodo(todo) {
+      this.todos.splice(this.todos.indexOf(todo), 1);
+    },
+    editTodo(todo) {
+      this.beforeEditCache = todo;
+      this.editedTodo = todo;
+    },
+    doneEdit(todo) {
+      if (!this.editedTodo) {
+        return;
+      }
+      this.editedTodo = {};
+      if (!todo.title) {
+        this.removeTodo(todo);
+      }
+    },
+    cancelEdit(todo) {
+      this.editedTodo = {};
+      todo.title = this.beforeEditCache.title;
+      todo.date = this.beforeEditCache.date;
+    },
+    removeCompleted() {
+      this.todos = filters.active(this.todos);
+    }
+  }
+}
+</script>
+
+<style>
+header {
+  background: var(--background-secondary);
+  color: var(--color-secondary);
+  padding: 1em;
+}
+.left {
+  text-align: left;
+}
+.right {
+  text-align: right;
+}
+.flex {
+  display: flex;
+}
+.flex {
+  display: flex;
+  align-items: center;
+}
+.flex > * {
+  flex-grow: 1;
+  flex-basis: 0;
+}
+.grow-2 {
+  flex-grow: 2;
+}
+.filters a {
+  display: block;
+  padding: 1em;
+  text-decoration: none;
+}
+a:before {
+  content: "[ ";
+}
+a:after {
+  content: " ]";
+}
+.title, .pagination > div {
+  padding: 1em;
+}
+.title.selected, a.selected {
+  text-decoration: underline;
+}
+.selected.asc:after {
+  content: " (asc)";
+}
+.selected.desc:after {
+  content: " (desc)";
+}
+</style>
