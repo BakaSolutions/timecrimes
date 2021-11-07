@@ -5,6 +5,8 @@
     --color: #fffd;
     --color-secondary: #fff6;
     --color-focus: #fff;
+
+    --timer-width: 14em;
 }
 * {
     box-sizing: border-box;
@@ -24,11 +26,17 @@ input, button {
     border: none;
     padding: 1em;
 }
+input[type=datetime-local] {
+    padding: 1em 0;
+    min-width: var(--timer-width);
+    text-align: center;
+}
 body, input, button {
     font-family:
             "Cascadia Code PL",
             "Cascadia Mono PL",
-            "Ubuntu",
+            "Ubuntu Mono",
+            "DejaVu Sans Mono",
             "Courier New",
             monospace;
     font-size: 1em;
@@ -50,6 +58,7 @@ button {
     appearance: none;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    cursor: pointer;
     padding: 1em;
 }
 input[type=text] {
@@ -65,11 +74,4 @@ ul {
     list-style-type: none;
     margin: 0;
     padding: 0;
-}
-
-.editing {
-    box-shadow: 0 0 .4em #ff0;
-}
-.completed {
-    background: #0f06;
 }

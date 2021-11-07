@@ -14,7 +14,7 @@
                  :class="{selected: sortedBy === c.column,
                   asc: sorted === 'asc',
                   desc: sorted === 'desc',
-                  'grow-2': c.grow === 2}">{{c.title}}</div>
+                  'time': c.column === 'date'}">{{c.title}}</div>
           </li>
           <li class="todo" v-for="todo in filteredTodos" :key="todo.id">
             <ToDoItem :todo="todo"
@@ -37,7 +37,7 @@
           <input type="datetime-local" v-model="newTodo.date" />
         </form>
       </div>
-      <div class="flex pagination" v-show="limit < todos.length">
+      <div class="flex equal pagination" v-show="limit < todos.length">
         <div>
           <button v-if="currentPage > 1" @click="prevPage">&lt;&lt; Previous</button>
         </div>
@@ -48,7 +48,7 @@
           <button v-if="currentPage*limit < todos.length" @click="nextPage">Next &gt;&gt;</button>
         </div>
       </div>
-      <ul class="filters flex" v-show="todos.length">
+      <ul class="filters flex equal" v-show="todos.length">
         <li>
           <a href="#/all" :class="{ selected: visibility === 'all' }">
             All
@@ -282,17 +282,18 @@ header {
 }
 .flex {
   display: flex;
-}
-.flex {
-  display: flex;
   align-items: center;
 }
 .flex > * {
   flex-grow: 1;
+}
+.flex.equal > * {
   flex-basis: 0;
 }
-.grow-2 {
-  flex-grow: 2;
+.flex > .fix-width,
+.title.time {
+  flex-grow: 0;
+  flex-shrink: 0;
 }
 .filters a {
   display: block;
@@ -306,7 +307,7 @@ a:after {
   content: " ]";
 }
 .title, .pagination > div {
-  padding: 1em;
+  padding: 1em 0;
 }
 .title.selected, a.selected {
   text-decoration: underline;

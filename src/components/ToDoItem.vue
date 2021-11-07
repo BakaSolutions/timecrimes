@@ -1,6 +1,6 @@
 <template>
   <div class="task" :class="{ completed: todo.completed, editing }">
-    <form @submit.prevent="doneEdit(todo)">
+    <form class="flex" @submit.prevent="doneEdit(todo)">
       <input type="button"
              @click="cancelEdit(todo)"
              v-show="editing"
@@ -78,5 +78,11 @@ export default {
   display: block;
   padding: 1em;
   width: 100%;
+}
+.editing {
+  box-shadow: 0 0 .4em #ff0;
+}
+.completed {
+  background: #0f06;
 }
 </style>

@@ -1,5 +1,5 @@
 <template>
-  <span class="time">
+  <span class="time timer fix-width">
     <span v-if="value">
       T{{ time.plus ? '+' : '-' }}
     </span>
@@ -81,10 +81,10 @@ export default {
 
 <style>
 .time {
-  margin: 1em;
-  text-align: center;
+  width: var(--timer-width);
 }
-input[type=datetime-local], .time {
-  min-width: 18em;
+.timer {
+  text-align: center;
+  padding: 1em 0;
 }
 </style>
