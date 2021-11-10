@@ -5,8 +5,7 @@
              @click="cancelEdit(todo)"
              v-show="editing"
              value="Cancel" />
-      <input class="toggle"
-             type="checkbox"
+      <Checkbox
              v-show="!editing"
              v-model="todo.completed" />
       <label @click="editTodo(todo)"
@@ -34,10 +33,12 @@
 
 <script>
 import Timer from './Timer';
+import Checkbox from './Checkbox';
 
 export default {
   components: {
-    Timer
+    Timer,
+    Checkbox
   },
   props: {
     todo: {
