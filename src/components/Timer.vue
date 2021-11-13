@@ -85,6 +85,5 @@ export default {
 }
 .timer {
   text-align: center;
-  padding: 1em 0;
 }
 </style>

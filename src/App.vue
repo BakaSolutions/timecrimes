@@ -24,6 +24,9 @@
                       @todo-edit-cancel="cancelEdit(todo)"
             />
           </li>
+          <li class="todo empty" v-show="!filteredTodos.length">
+            No tasks yet :c
+          </li>
         </ul>
       </section>
       <div class="new-task">
@@ -306,8 +309,11 @@ a:before {
 a:after {
   content: " ]";
 }
+.todo.empty {
+  padding: var(--padding-topsides) 0;
+}
 .title, .pagination > div {
-  padding: 1em 0;
+  padding: var(--padding-topsides) 0;
 }
 .title.selected, a.selected {
   text-decoration: underline;

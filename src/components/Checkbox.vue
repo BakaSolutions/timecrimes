@@ -29,6 +29,6 @@ export default {
   div {
     cursor: pointer;
     user-select: none;
-    padding: 0.5em;
+    padding: var(--padding-topsides) var(--padding-sides);
   }
 </style>

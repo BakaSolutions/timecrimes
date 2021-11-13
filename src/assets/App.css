@@ -7,6 +7,8 @@
     --color-focus: #fff;
 
     --timer-width: 14em;
+    --padding-topsides: 1em;
+    --padding-sides: 1ch;
 }
 * {
     box-sizing: border-box;
@@ -24,10 +26,10 @@ input, button {
     background: var(--background-secondary);
     color: var(--color-secondary);
     border: none;
-    padding: 1em;
+    padding: var(--padding-topsides) var(--padding-sides);
 }
 input[type=datetime-local] {
-    padding: 1em 0;
+    padding: var(--padding-topsides) 0;
     min-width: var(--timer-width);
     text-align: center;
 }
@@ -59,7 +61,6 @@ button {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     cursor: pointer;
-    padding: 1em;
 }
 input[type=text] {
     width: 100%;
@@ -67,8 +68,8 @@ input[type=text] {
 .new-task form {
     display: flex;
 }
-footer > div, input[type=checkbox] {
-    margin: 1em;
+footer > div {
+    margin: var(--padding-topsides) var(--padding-sides);
 }
 ul {
     list-style-type: none;

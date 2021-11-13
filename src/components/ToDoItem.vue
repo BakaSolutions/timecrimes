@@ -77,11 +77,14 @@ export default {
 .task label {
   text-align: left;
   display: block;
-  padding: 1em;
+  padding: var(--padding-topsides) 0;
   width: 100%;
 }
 .editing {
-  box-shadow: 0 0 .4em #ff0;
+  background: #ff06;
+}
+.editing input {
+  background: transparent;
 }
 .completed {
   background: #0f06;
