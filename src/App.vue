@@ -247,7 +247,7 @@ export default {
       todo.date = this.beforeEditCache.date;
     },
     removeCompleted() {
-      this.todos = filters.active(this.todos);
+      this.$store.commit('removeCompletedTodos');
     }
   }
 }

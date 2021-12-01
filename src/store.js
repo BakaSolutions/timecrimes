@@ -32,10 +32,15 @@ export default new Vuex.Store({
         },
         removeTodo(state, todo) {
             state.todos.splice(state.todos.indexOf(todo), 1);
+        },
+        removeCompletedTodos(state) {
+            state.todos = state.todos.filter(todo => !todo.completed)
         }
     },
     plugins: [
         createPersistedState(),
-        sharedMutations({ predicate: ['addTodo', 'editTodo', 'removeTodo'] })
+        sharedMutations({
+            predicate: ['addTodo', 'editTodo', 'removeTodo', 'removeCompletedTodos']
+        })
     ],
 });
