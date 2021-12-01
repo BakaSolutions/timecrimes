@@ -37,6 +37,11 @@ export default new Vuex.Store({
             state.todos = state.todos.filter(todo => !todo.completed)
         }
     },
+    getters: {
+        allTodos: state => state.todos,
+        remainingTodos: state => state.todos.filter(todo => !todo.completed),
+        completedTodos: state => state.todos.filter(todo => todo.completed),
+    },
     plugins: [
         createPersistedState(),
         sharedMutations({

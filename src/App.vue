@@ -96,11 +96,6 @@
 <script>
 import "./assets/App.css";
 
-let filters = {
-  all: todos => todos,
-  active: todos => todos.filter(todo => !todo.completed),
-  completed: todos => todos.filter(todo => todo.completed),
-};
 import ToDoItem from "@/components/ToDoItem";
 
 export default {
@@ -138,7 +133,12 @@ export default {
       return this.$store.state.todos;
     },
     filteredTodos() {
-      return filters[this.visibility](this.todos).sort((a,b) => {
+      let map = {
+        all: 'allTodos',
+        active: 'remainingTodos',
+        completed: 'completedTodos'
+      };
+      return [...this.$store.getters[map[this.visibility]]].sort((a,b) => {
         let modifier = this.sorted === "asc" ? 1 : -1;
         if (a[this.sortedBy] > b[this.sortedBy]) {
           return modifier;
@@ -166,7 +166,7 @@ export default {
       });
     },
     remaining() {
-      return filters.active(this.todos).length;
+      return this.$store.getters.remainingTodos.length;
     },
     allDone: {
       get() {
@@ -177,15 +177,10 @@ export default {
       }
     }
   },
-  filters: {
-    pluralize(n) {
-      return n === 1 ? "item" : "items";
-    }
-  },
   methods: {
     onHashChange() {
       let visibility = window.location.hash.replace(/#\/?/, "");
-      if (filters[visibility]) {
+      if (visibility === 'active' || visibility === 'completed') {
         return this.visibility = visibility;
       }
       window.location.hash = "";
