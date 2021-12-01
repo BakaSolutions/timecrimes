@@ -11,6 +11,16 @@ export default new Vuex.Store({
     },
     mutations: {
         addTodo(state, todo) {
+            if (state.todos.length === 0) {
+                todo.id = 0
+            } else {
+                const maxId = state.todos.reduce(
+                    (max, todo) => (todo.id > max ? todo.id : max),
+                    state.todos[0].id
+                );
+                todo.id = maxId + 1;
+            }
+
             state.todos.push(todo);
         },
         editTodo(state, todo) {
@@ -22,17 +32,6 @@ export default new Vuex.Store({
         },
         removeTodo(state, todo) {
             state.todos.splice(state.todos.indexOf(todo), 1);
-        }
-    },
-    actions: {
-        getNextId({state}) {
-            return new Promise(resolve => {
-                if (!state.todos.length) {
-                    return resolve(0);
-                }
-                let lastTodo = state.todos.length - 1;
-                return resolve(state.todos[lastTodo].id + 1);
-            });
         }
     },
     plugins: [

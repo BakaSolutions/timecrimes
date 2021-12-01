@@ -211,13 +211,12 @@ export default {
         this.currentPage--;
       }
     },
-    async addTodo() {
+    addTodo() {
       let {title, date} = this.newTodo;
       if (!title) {
         return;
       }
       let todo = {
-        id: await this.$store.dispatch('getNextId'),
         title,
         date,
         completed: false
