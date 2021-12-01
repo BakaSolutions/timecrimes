@@ -96,20 +96,6 @@
 <script>
 import "./assets/App.css";
 
-const STORAGE_KEY = "todo";
-let todoStorage = {
-  fetch() {
-    let todos = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
-    todos.forEach(function(todo, index) {
-      todo.id = index;
-    });
-    todoStorage.uid = todos.length;
-    return todos;
-  },
-  save(todos) {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(todos));
-  }
-};
 let filters = {
   all: todos => todos,
   active: todos => todos.filter(todo => !todo.completed),
@@ -124,9 +110,9 @@ export default {
   },
   data() {
     return {
-      todos: todoStorage.fetch(),
       newTodo: {},
       editedTodo: {},
+      beforeEditCache: {},
 
       visibility: "all",
       sortedBy: "date",
@@ -140,14 +126,6 @@ export default {
       currentPage: 1
     }
   },
-  watch: {
-    todos: {
-      handler(todos) {
-        todoStorage.save(todos);
-      },
-      deep: true
-    }
-  },
   created() {
     window.addEventListener("hashchange", this.onHashChange);
     this.onHashChange();
@@ -156,6 +134,9 @@ export default {
     window.removeEventListener("hashchange", this.onHashChange);
   },
   computed: {
+    todos() {
+      return this.$store.state.todos;
+    },
     filteredTodos() {
       return filters[this.visibility](this.todos).sort((a,b) => {
         let modifier = this.sorted === "asc" ? 1 : -1;
@@ -230,21 +211,22 @@ export default {
         this.currentPage--;
       }
     },
-    addTodo() {
+    async addTodo() {
       let {title, date} = this.newTodo;
       if (!title) {
         return;
       }
-      this.todos.push({
-        id: todoStorage.uid++,
+      let todo = {
+        id: await this.$store.dispatch('getNextId'),
         title,
         date,
         completed: false
-      });
+      };
+      this.$store.commit('addTodo', todo);
       this.newTodo = {};
     },
     removeTodo(todo) {
-      this.todos.splice(this.todos.indexOf(todo), 1);
+      this.$store.commit('removeTodo', todo);
     },
     editTodo(todo) {
       this.beforeEditCache = todo;
@@ -256,8 +238,9 @@ export default {
       }
       this.editedTodo = {};
       if (!todo.title) {
-        this.removeTodo(todo);
+        return this.removeTodo(todo);
       }
+      this.$store.commit('editTodo', todo);
     },
     cancelEdit(todo) {
       this.editedTodo = {};
