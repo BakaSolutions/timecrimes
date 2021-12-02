@@ -1,9 +1,6 @@
 <template>
   <div id="app">
-    <header class="flex">
-      <div class="left">Timecrimes</div>
-      <div class="right">no time management is a crime</div>
-    </header>
+    <Header />
     <main>
       <section class="main" v-show="todos.length">
         <ul class="todo-list">
@@ -30,7 +27,7 @@
         </ul>
       </section>
       <div class="new-task">
-        <form @submit.prevent="addTodo">
+        <form @submit.prevent="addTodo" class="flex">
           <input
               type="text"
               autofocus
@@ -40,55 +37,23 @@
           <input type="datetime-local" v-model="newTodo.date" />
         </form>
       </div>
-      <div class="flex equal pagination" v-show="limit < filteredTodos.length">
-        <div>
-          <button v-if="currentPage > 1" @click="prevPage">&lt;&lt; Previous</button>
-        </div>
-        <div>
-          Page {{currentPage}}/{{Math.floor(filteredTodos.length/limit)+1}}
-        </div>
-        <div>
-          <button v-if="currentPage*limit < filteredTodos.length" @click="nextPage">Next &gt;&gt;</button>
-        </div>
-      </div>
-      <ul class="filters flex equal" v-show="todos.length">
-        <li>
-          <a href="#/all" :class="{ selected: visibility === 'all' }">
-            All
-            <span class="counter" v-show="todos.length">
-              ({{ todos.length }})
-            </span>
-          </a>
-        </li>
-        <li>
-          <a href="#/active" :class="{ selected: visibility === 'active' }">
-            Active
-            <span class="counter" v-show="remaining">
-              ({{ remaining }})
-            </span>
-          </a>
-        </li>
-        <li>
-          <a href="#/completed" :class="{ selected: visibility === 'completed' }">
-            Completed
-            <span class="counter" v-show="todos.length - remaining">
-              ({{ todos.length - remaining }})
-            </span>
-          </a>
-        </li>
-      </ul>
-      <footer v-show="todos.length">
-        <button
-            class="clear-completed"
-            @click="removeCompleted"
-            v-show="todos.length > remaining"
-        >
-          [ Clear completed tasks ]
-        </button>
-        <div>
-          Baka Solutions, 2021
-        </div>
-      </footer>
+      <Pagination
+          :length="filteredTodos.length"
+          :limit="limit"
+          :page="currentPage"
+          @page-prev="prevPage"
+          @page-next="nextPage" />
+      <TodoTabs :todos="todos"
+                :visibility="visibility"
+                :remaining="remaining" />
+      <button
+          class="clear-completed"
+          @click="removeCompleted"
+          v-show="todos.length > remaining"
+      >
+        [ Clear completed tasks ]
+      </button>
+      <Footer />
     </main>
   </div>
 </template>
@@ -96,12 +61,20 @@
 <script>
 import "./assets/App.css";
 
+import Header from "@/components/Header";
 import ToDoItem from "@/components/ToDoItem";
+import Pagination from "@/components/Pagination";
+import TodoTabs from "@/components/TodoTabs";
+import Footer from "@/components/Footer";
 
 export default {
   name: 'Timecrimes',
   components: {
-    ToDoItem
+    Header,
+    ToDoItem,
+    Pagination,
+    TodoTabs,
+    Footer
   },
   data() {
     return {
@@ -233,58 +206,3 @@ export default {
   }
 }
 </script>
-
-<style>
-header {
-  background: var(--background-secondary);
-  color: var(--color-secondary);
-  padding: 1em;
-}
-.left {
-  text-align: left;
-}
-.right {
-  text-align: right;
-}
-.flex {
-  display: flex;
-  align-items: center;
-}
-.flex > * {
-  flex-grow: 1;
-}
-.flex.equal > * {
-  flex-basis: 0;
-}
-.flex > .fix-width,
-.title.time {
-  flex-grow: 0;
-  flex-shrink: 0;
-}
-.filters a {
-  display: block;
-  padding: 1em;
-  text-decoration: none;
-}
-a:before {
-  content: "[ ";
-}
-a:after {
-  content: " ]";
-}
-.todo.empty {
-  padding: var(--padding-topsides) 0;
-}
-.title, .pagination > div {
-  padding: var(--padding-topsides) 0;
-}
-.title.selected, a.selected {
-  text-decoration: underline;
-}
-.selected.asc:after {
-  content: " (asc)";
-}
-.selected.desc:after {
-  content: " (desc)";
-}
-</style>

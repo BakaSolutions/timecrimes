@@ -65,14 +65,50 @@ button {
 input[type=text] {
     width: 100%;
 }
-.new-task form {
-    display: flex;
-}
-footer > div {
-    margin: var(--padding-topsides) var(--padding-sides);
-}
 ul {
     list-style-type: none;
     margin: 0;
     padding: 0;
+}
+
+.flex {
+    display: flex;
+    align-items: center;
+}
+.flex > * {
+    flex-grow: 1;
+}
+.flex.equal > * {
+    flex-basis: 0;
+}
+.flex > .fix-width,
+.title.time {
+    flex-grow: 0;
+    flex-shrink: 0;
+}
+.filters a {
+    display: block;
+    padding: 1em;
+    text-decoration: none;
+}
+a:before {
+    content: "[ ";
+}
+a:after {
+    content: " ]";
+}
+.todo.empty {
+    padding: var(--padding-topsides) 0;
+}
+.title, .pagination > div {
+    padding: var(--padding-topsides) 0;
+}
+.title.selected, a.selected {
+    text-decoration: underline;
+}
+.selected.asc:after {
+    content: " (asc)";
+}
+.selected.desc:after {
+    content: " (desc)";
 }
