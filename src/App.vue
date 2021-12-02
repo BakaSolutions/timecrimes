@@ -8,18 +8,20 @@
             <div v-for="c in columns" :key="c.column"
                  @click="sortBy(c.column)"
                  class="title"
-                 :class="{selected: sortedBy === c.column,
-                  asc: sorted === 'asc',
-                  desc: sorted === 'desc',
-                  'time': c.column === 'date'}">{{c.title}}</div>
+                 :class="{
+                   selected: sortedBy === c.column,
+                   asc: sorted === 'asc',
+                   desc: sorted === 'desc',
+                   time: c.column === 'date'
+                 }">{{c.title}}</div>
           </li>
           <li class="todo" v-for="todo in paginatedTodos" :key="todo.id">
-            <ToDoItem :todo="todo"
-                      :edited-todo="editedTodo"
-                      @todo-edit="editTodo(todo)"
-                      @todo-edit-done="doneEdit(todo)"
-                      @todo-edit-cancel="cancelEdit(todo)"
-            />
+            <ToDoItem
+                :todo="todo"
+                :edited-todo="editedTodo"
+                @todo-edit="editTodo(todo)"
+                @todo-edit-done="doneEdit(todo)"
+                @todo-edit-cancel="cancelEdit(todo)" />
           </li>
           <li class="todo empty" v-show="!paginatedTodos.length">
             No tasks yet :c
@@ -125,14 +127,6 @@ export default {
     },
     remaining() {
       return this.$store.getters.remainingTodos.length;
-    },
-    allDone: {
-      get() {
-        return this.remaining === 0;
-      },
-      set(value) {
-        this.todos.forEach(todo => todo.completed = value);
-      }
     }
   },
   methods: {

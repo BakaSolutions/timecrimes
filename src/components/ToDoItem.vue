@@ -1,20 +1,23 @@
 <template>
   <div class="task" :class="{ completed: todo.completed, editing }">
     <form class="flex" @submit.prevent="doneEdit(todo)">
-      <input type="button"
-             @click="cancelEdit(todo)"
-             v-show="editing"
-             value="Cancel" />
+      <input
+          type="button"
+          @click="cancelEdit(todo)"
+          v-show="editing"
+          value="Cancel" />
       <Checkbox
-             v-show="!editing"
-             v-model="todo.completed" />
-      <label @click="editTodo(todo)"
-             v-show="!editing">
+          v-show="!editing"
+          v-model="todo.completed" />
+      <label
+          @click="editTodo(todo)"
+          v-show="!editing">
         {{todo.title}}
       </label>
-      <Timer :date="todo.date"
-             @click="editTodo(todo)"
-             v-show="!editing" />
+      <Timer
+          :date="todo.date"
+          @click="editTodo(todo)"
+          v-show="!editing" />
       <input
           class="edit"
           type="text"
@@ -22,10 +25,11 @@
           v-show="editing"
           @keyup.esc="cancelEdit(todo)"
       />
-      <input type="datetime-local"
-             @keyup.esc="cancelEdit(todo)"
-             v-model="todo.date"
-             v-show="editing"
+      <input
+          type="datetime-local"
+          @keyup.esc="cancelEdit(todo)"
+          v-model="todo.date"
+          v-show="editing"
       />
     </form>
   </div>
