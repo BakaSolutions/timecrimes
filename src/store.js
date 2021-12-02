@@ -41,6 +41,39 @@ export default new Vuex.Store({
         allTodos: state => state.todos,
         remainingTodos: state => state.todos.filter(todo => !todo.completed),
         completedTodos: state => state.todos.filter(todo => todo.completed),
+        filteredTodos: (state, getters) => (type, sortedBy, sorted) => {
+            let map = {
+                all: "allTodos",
+                active: "remainingTodos",
+                completed: "completedTodos"
+            };
+            let todos = getters[map[type]];
+
+            if (sortedBy && sorted) {
+                todos = todos.sort((a, b) => {
+                    let modifier = sorted === "asc" ? 1 : -1;
+                    if (a[sortedBy] > b[sortedBy]) {
+                        return modifier;
+                    }
+                    if (a[sortedBy] < b[sortedBy]) {
+                        return -1 * modifier;
+                    }
+                    if (typeof a[sortedBy] === "undefined"
+                        && typeof b[sortedBy] === "undefined") {
+                        return 0;
+                    }
+                    if (typeof a[sortedBy] === "undefined") {
+                        return 1;
+                    }
+                    if (typeof b[sortedBy] === "undefined") {
+                        return -1;
+                    }
+                    return 0;
+                })
+            }
+
+            return todos;
+        }
     },
     plugins: [
         createPersistedState(),

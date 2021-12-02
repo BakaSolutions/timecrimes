@@ -16,7 +16,7 @@
                   desc: sorted === 'desc',
                   'time': c.column === 'date'}">{{c.title}}</div>
           </li>
-          <li class="todo" v-for="todo in filteredTodos" :key="todo.id">
+          <li class="todo" v-for="todo in paginatedTodos" :key="todo.id">
             <ToDoItem :todo="todo"
                       :edited-todo="editedTodo"
                       @todo-edit="editTodo(todo)"
@@ -24,7 +24,7 @@
                       @todo-edit-cancel="cancelEdit(todo)"
             />
           </li>
-          <li class="todo empty" v-show="!filteredTodos.length">
+          <li class="todo empty" v-show="!paginatedTodos.length">
             No tasks yet :c
           </li>
         </ul>
@@ -40,15 +40,15 @@
           <input type="datetime-local" v-model="newTodo.date" />
         </form>
       </div>
-      <div class="flex equal pagination" v-show="limit < todos.length">
+      <div class="flex equal pagination" v-show="limit < filteredTodos.length">
         <div>
           <button v-if="currentPage > 1" @click="prevPage">&lt;&lt; Previous</button>
         </div>
         <div>
-          Page {{currentPage}}/{{Math.floor(todos.length/limit)+1}}
+          Page {{currentPage}}/{{Math.floor(filteredTodos.length/limit)+1}}
         </div>
         <div>
-          <button v-if="currentPage*limit < todos.length" @click="nextPage">Next &gt;&gt;</button>
+          <button v-if="currentPage*limit < filteredTodos.length" @click="nextPage">Next &gt;&gt;</button>
         </div>
       </div>
       <ul class="filters flex equal" v-show="todos.length">
@@ -133,37 +133,22 @@ export default {
       return this.$store.state.todos;
     },
     filteredTodos() {
-      let map = {
-        all: 'allTodos',
-        active: 'remainingTodos',
-        completed: 'completedTodos'
-      };
-      return [...this.$store.getters[map[this.visibility]]].sort((a,b) => {
-        let modifier = this.sorted === "asc" ? 1 : -1;
-        if (a[this.sortedBy] > b[this.sortedBy]) {
-          return modifier;
-        }
-        if (a[this.sortedBy] < b[this.sortedBy]) {
-          return -1 * modifier;
-        }
-        if (typeof a[this.sortedBy] === "undefined"
-          && typeof b[this.sortedBy] === "undefined") {
-          return 0;
-        }
-        if (typeof a[this.sortedBy] === "undefined") {
-          return 1;
-        }
-        if (typeof b[this.sortedBy] === "undefined") {
-          return -1;
-        }
-        return 0;
-      }).filter((_, index) => {
-        let start = (this.currentPage - 1) * this.limit;
-        let end = this.currentPage * this.limit;
-        if (index >= start && index < end) {
-          return true;
-        }
-      });
+      return this.$store.getters.filteredTodos(this.visibility, this.sortedBy, this.sorted);
+    },
+    paginatedTodos() {
+      let todos = this.filteredTodos;
+
+      if (this.limit) {
+        todos = todos.filter((_, index) => {
+          let start = (this.currentPage - 1) * this.limit;
+          let end = this.currentPage * this.limit;
+          if (index >= start && index < end) {
+            return true;
+          }
+        })
+      }
+
+      return todos;
     },
     remaining() {
       return this.$store.getters.remainingTodos.length;
@@ -179,6 +164,7 @@ export default {
   },
   methods: {
     onHashChange() {
+      this.currentPage = 1;
       let visibility = window.location.hash.replace(/#\/?/, "");
       if (visibility === 'active' || visibility === 'completed') {
         return this.visibility = visibility;
