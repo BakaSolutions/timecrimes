@@ -1,9 +1,11 @@
 :root {
   --background: #0a0a0a;
   --background-secondary: #000;
+  --background-modal: #729fcf;
   --background-focus: #444c;
   --color: #fffd;
   --color-secondary: #fff6;
+  --color-modal: #fff;
   --color-focus: #fff;
 
   --timer-width: 14em;

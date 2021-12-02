@@ -28,6 +28,8 @@
           </li>
         </ul>
       </section>
+      <TaskForm
+        @todo-new="addTodo" />
       <div class="new-task">
         <form @submit.prevent="addTodo" class="flex">
           <input
@@ -68,10 +70,12 @@ import ToDoItem from "@/components/ToDoItem";
 import Pagination from "@/components/Pagination";
 import TodoTabs from "@/components/TodoTabs";
 import Footer from "@/components/Footer";
+import TaskForm from "@/components/TaskForm";
 
 export default {
   name: 'Timecrimes',
   components: {
+    TaskForm,
     Header,
     ToDoItem,
     Pagination,
@@ -159,8 +163,8 @@ export default {
         this.currentPage--;
       }
     },
-    addTodo() {
-      let {title, date} = this.newTodo;
+    addTodo(newTodo) {
+      let {title, date} = newTodo || this.newTodo;
       if (!title) {
         return;
       }
