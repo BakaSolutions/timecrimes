@@ -1,5 +1,5 @@
 <template>
-  <section class="modal" v-show="toggle" @keyup.esc="closeModal">
+  <section class="modal" v-show="show" @keyup.esc="closeModal">
     <div class="header flex">
       <div class="left">
         <slot name="header"></slot>
@@ -20,14 +20,9 @@ export default {
       type: Boolean
     }
   },
-  computed: {
-    toggle() {
-      return this.show;
-    }
-  },
   methods: {
     closeModal() {
-      this.show = false;
+      this.$emit("modal-show", !this.show);
     }
   }
 }

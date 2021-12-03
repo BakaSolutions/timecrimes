@@ -1,10 +1,10 @@
 <template>
   <div>
-    <button class="wide" @click="openModal">
+    <button class="wide" @click="openModal()">
       + Add new task
     </button>
 
-    <Modal :show="toggle">
+    <Modal :show="toggle" @modal-show="openModal">
       <template v-slot:header>
         Adding a new task
       </template>
@@ -41,8 +41,8 @@ export default {
       this.$emit('todo-new', this.newTodo);
       this.newTodo = {};
     },
-    openModal() {
-      this.toggle = !this.toggle;
+    openModal(toggle) {
+      this.toggle = toggle ?? !this.toggle;
     }
   },
   directives: {
