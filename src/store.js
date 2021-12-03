@@ -1,13 +1,12 @@
-import Vue from 'vue';
-import Vuex from 'vuex';
+import { createStore } from 'vuex';
 import sharedMutations from 'vuex-shared-mutations';
 import createPersistedState from 'vuex-persistedstate';
 
-Vue.use(Vuex);
-
-export default new Vuex.Store({
-  state: {
-    todos: [],
+export default createStore({
+  state() {
+    return {
+      todos: []
+    }
   },
   mutations: {
     addTodo(state, todo) {

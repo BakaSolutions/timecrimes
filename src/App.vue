@@ -16,7 +16,7 @@
                  }">{{c.title}}</div>
           </li>
           <li class="todo" v-for="todo in paginatedTodos" :key="todo.id">
-            <ToDoItem
+            <TodoItem
                 :todo="todo"
                 :edited-todo="editedTodo"
                 @todo-edit="editTodo(todo)"
@@ -66,18 +66,17 @@
 import "./assets/App.css";
 
 import Header from "@/components/Header";
-import ToDoItem from "@/components/ToDoItem";
+import TodoItem from "@/components/TodoItem";
 import Pagination from "@/components/Pagination";
 import TodoTabs from "@/components/TodoTabs";
 import Footer from "@/components/Footer";
 import TaskForm from "@/components/TaskForm";
 
 export default {
-  name: 'Timecrimes',
   components: {
     TaskForm,
     Header,
-    ToDoItem,
+    TodoItem,
     Pagination,
     TodoTabs,
     Footer
