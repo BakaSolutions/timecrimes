@@ -8,7 +8,7 @@
           value="Cancel" />
       <Checkbox
           v-show="!editing"
-          :value="todo.completed" />
+          v-model="todo.completed" />
       <label
           @click="editTodo(todo)"
           v-show="!editing">
@@ -21,14 +21,14 @@
       <input
           class="edit"
           type="text"
-          :value="todo.title"
+          v-model="todo.title"
           v-show="editing"
           @keyup.esc="cancelEdit(todo)"
       />
       <input
           type="datetime-local"
           @keyup.esc="cancelEdit(todo)"
-          :value="todo.date"
+          v-model="todo.date"
           v-show="editing"
       />
     </form>
@@ -45,11 +45,16 @@ export default {
     Checkbox
   },
   props: {
-    todo: {
+    id: {
       required: true
     },
     editedTodo: {
       required: true
+    }
+  },
+  data() {
+    return {
+      todo: this.$store.getters.getTodoById(this.id)
     }
   },
   computed: {

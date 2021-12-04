@@ -17,7 +17,7 @@
           </li>
           <li class="todo" v-for="todo in paginatedTodos" :key="todo.id">
             <TodoItem
-                :todo="todo"
+                :id="todo.id"
                 :edited-todo="editedTodo"
                 @todo-edit="editTodo(todo)"
                 @todo-edit-done="doneEdit(todo)"
@@ -28,19 +28,7 @@
           </li>
         </ul>
       </section>
-      <TaskForm
-        @todo-new="addTodo" />
-      <div class="new-task">
-        <form @submit.prevent="addTodo" class="flex">
-          <input
-              type="text"
-              autofocus
-              autocomplete="off"
-              placeholder="What needs to be done?"
-              v-model.trim.lazy="newTodo.title" />
-          <input type="datetime-local" v-model="newTodo.date" />
-        </form>
-      </div>
+      <TaskForm @todo-new="addTodo" />
       <Pagination
           :length="filteredTodos.length"
           :limit="limit"
@@ -163,7 +151,7 @@ export default {
       }
     },
     addTodo(newTodo) {
-      let {title, date} = newTodo || this.newTodo;
+      let {title, date} = newTodo;
       if (!title) {
         return;
       }
@@ -172,8 +160,8 @@ export default {
         date,
         completed: false
       };
-      this.$store.commit('addTodo', todo);
       this.newTodo = {};
+      this.$store.commit('addTodo', todo);
     },
     removeTodo(todo) {
       this.$store.commit('removeTodo', todo);

@@ -9,11 +9,11 @@
         Adding a new task
       </template>
       <form @submit.prevent="addTodo">
-        <input v-focus
+        <input ref="input"
                type="text"
                autocomplete="off"
                placeholder="What needs to be done?"
-               v-model.trim.lazy="newTodo.title" />
+               v-model.trim="newTodo.title" />
         <input type="datetime-local" v-model="newTodo.date" />
         <button>
           Add
@@ -43,11 +43,7 @@ export default {
     },
     openModal(toggle) {
       this.toggle = toggle ?? !this.toggle;
-    }
-  },
-  directives: {
-    focus(el) {
-      el.focus();
+      this.$nextTick(() => this.$refs.input.focus());
     }
   }
 };

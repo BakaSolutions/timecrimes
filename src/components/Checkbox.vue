@@ -7,19 +7,19 @@
 <script>
 export default {
   props: {
-    value: {
+    modelValue: {
       required: true
     }
   },
   data() {
     return {
-      content: this.value
+      content: this.modelValue
     }
   },
   methods: {
     handleInput() {
       this.content = !this.content
-      this.$emit('input', this.content)
+      this.$emit('update:modelValue', this.content)
     },
   }
 }
