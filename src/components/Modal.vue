@@ -1,6 +1,10 @@
 <template>
-  <section class="modal" v-show="show" @keyup.esc="closeModal">
-    <div class="header flex">
+  <section
+    class="modal"
+    v-show="show"
+    @keyup.esc="closeModal"
+    ref="dragElement">
+    <div class="header flex" ref="dragHandle">
       <div class="left">
         <slot name="header"></slot>
       </div>
@@ -11,6 +15,19 @@
     </div>
   </section>
 </template>
+
+
+<script setup>
+import { ref, onMounted } from "vue";
+import { useDraggability } from "vue-draggability";
+
+const dragElement = ref(null);
+const dragHandle = ref(null);
+
+onMounted(() => {
+  useDraggability(dragElement, dragHandle);
+});
+</script>
 
 <script>
 export default {
@@ -41,17 +58,13 @@ export default {
   background: var(--background-modal);
   color: var(--color-modal);
 }
-.modal .header > div {
-  padding: .5em;
-}
-
-button {
-  padding: .5em 2ch;
+.modal .header > div, button {
+  padding: .5em var(--padding-sides);
 }
 button:hover,
 button:focus {
   outline: none;
-  padding: .5em;
+  padding: .5em 0;
 }
 button:hover:before,
 button:focus:before {
