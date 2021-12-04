@@ -18,8 +18,17 @@
 
 
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, defineEmits, defineProps } from "vue";
 import { useDraggability } from "vue-draggability";
+
+defineProps({
+  show: {
+    default: false,
+    type: Boolean
+  }
+});
+
+const emit = defineEmits(["modal-show"]);
 
 const dragElement = ref(null);
 const dragHandle = ref(null);
@@ -27,21 +36,9 @@ const dragHandle = ref(null);
 onMounted(() => {
   useDraggability(dragElement, dragHandle);
 });
-</script>
 
-<script>
-export default {
-  props: {
-    show: {
-      default: false,
-      type: Boolean
-    }
-  },
-  methods: {
-    closeModal() {
-      this.$emit("modal-show", !this.show);
-    }
-  }
+function closeModal() {
+  emit("modal-show", !this.show);
 }
 </script>
 
