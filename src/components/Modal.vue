@@ -1,19 +1,21 @@
 <template>
-  <section
-    class="modal"
-    v-show="show"
-    @keyup.esc="closeModal"
-    ref="dragElement">
-    <div class="header flex" ref="dragHandle">
-      <div class="left">
-        <slot name="header"></slot>
+  <div class="modalLayer" v-show="show">
+    <section
+      class="modal"
+      v-show="show"
+      @keyup.esc="closeModal"
+      ref="dragElement">
+      <div class="header flex" ref="dragHandle">
+        <div class="left">
+          <slot name="header"></slot>
+        </div>
+        <button class="right" @click="closeModal">X</button>
       </div>
-      <button class="right" @click="closeModal">X</button>
-    </div>
-    <div>
-      <slot></slot>
-    </div>
-  </section>
+      <div>
+        <slot></slot>
+      </div>
+    </section>
+  </div>
 </template>
 
 
@@ -21,7 +23,7 @@
 import { ref, onMounted, defineEmits, defineProps } from "vue";
 import { useDraggability } from "vue-draggability";
 
-defineProps({
+const props = defineProps({
   show: {
     default: false,
     type: Boolean
@@ -38,22 +40,30 @@ onMounted(() => {
 });
 
 function closeModal() {
-  emit("modal-show", !this.show);
+  emit("modal-show", !props.show);
 }
 </script>
 
 <style scoped>
+.modalLayer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 .modal {
   background: var(--background-secondary);
   border: .25em var(--background-modal) solid;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  position: fixed;
 }
 .modal .header {
   background: var(--background-modal);
   color: var(--color-modal);
+  cursor: move;
 }
 .modal .header > div, button {
   padding: .5em var(--padding-sides);
