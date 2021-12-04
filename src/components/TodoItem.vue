@@ -8,7 +8,7 @@
           value="Cancel" />
       <Checkbox
           v-show="!editing"
-          v-model="todo.completed" />
+          :value="todo.completed" />
       <label
           @click="editTodo(todo)"
           v-show="!editing">
@@ -21,14 +21,14 @@
       <input
           class="edit"
           type="text"
-          v-model="todo.title"
+          :value="todo.title"
           v-show="editing"
           @keyup.esc="cancelEdit(todo)"
       />
       <input
           type="datetime-local"
           @keyup.esc="cancelEdit(todo)"
-          v-model="todo.date"
+          :value="todo.date"
           v-show="editing"
       />
     </form>

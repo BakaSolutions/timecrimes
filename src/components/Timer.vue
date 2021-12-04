@@ -1,7 +1,7 @@
 <template>
   <span class="time timer fix-width">
     <span v-if="value">
-      T{{ time.plus ? '+' : '-' }}
+      T{{ time.plus ? '+ ' : '- ' }}
     </span>
     <span v-else>-</span>
     <span v-if="time.y">
@@ -24,6 +24,7 @@
 
 <script>
 export default {
+  name: 'TodoTimer',
   props: {
     date: {
       required: true
@@ -39,7 +40,7 @@ export default {
     this.intervalId = setInterval(this.tick, 1000);
     this.tick();
   },
-  beforeDestroy() {
+  beforeUnmount() {
     if (this.intervalId) {
       clearInterval(this.intervalId);
     }
