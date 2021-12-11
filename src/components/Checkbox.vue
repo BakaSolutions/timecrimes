@@ -6,6 +6,7 @@
 
 <script>
 export default {
+  name: 'CheckBox',
   props: {
     modelValue: {
       required: true

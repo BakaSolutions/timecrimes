@@ -14,6 +14,7 @@
 
 <script>
 export default {
+  name: 'AppPagination',
   props: {
     length: {
       required: true

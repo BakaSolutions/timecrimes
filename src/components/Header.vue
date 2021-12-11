@@ -5,6 +5,12 @@
   </header>
 </template>
 
+<script>
+export default {
+  name: 'AppHeader'
+}
+</script>
+
 <style>
 header {
   background: var(--background-secondary);
